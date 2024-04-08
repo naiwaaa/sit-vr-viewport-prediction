@@ -1,0 +1,144 @@
+---
+jupyter:
+  jupytext:
+    formats: ipynb,Rmd
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.13.7
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+```{python tags=c()}
+# %reload_ext autoreload
+# %autoreload 2
+# %matplotlib inline
+```
+
+```{python}
+from pathlib import Path
+
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from IPython.display import HTML
+
+from viewport_prediction import visualization
+from viewport_prediction.entities import Session
+from viewport_prediction.helpers import coordinate_converter
+from viewport_prediction.utils import image, video
+
+matplotlib.rcParams["animation.embed_limit"] = 1024
+```
+
+<!-- #region tags=[] -->
+## Session
+<!-- #endregion -->
+
+```{python}
+session_name = "_video_05_user_99"
+session_dir = Path(f"../datasets/has_subtitle/{session_name}")
+
+sess = Session(session_dir)
+
+print(f"Session '{session_name}':")
+print("\tShape of playback_time:", sess.playback_time.shape)
+print("\tShape of head orientation log:", sess.spherical_coords.shape)
+print("\tShape of subtitle:", sess.subtitle.shape)
+print("\tNumber of extracted frames:", sess.frames.shape[0])
+```
+
+```{python}
+idx = 157
+
+frame = sess.frames[idx].astype(np.uint8)
+plt.imshow(frame)
+
+print(f"Playback time at index {idx}:", sess.playback_time[idx])
+print(f"Subtitle at index {idx}:\n\t'{sess.subtitle[idx]}'")
+print(
+    f"Collected head orientation at index {idx}:\n\t",
+    np.degrees(sess.spherical_coords[idx]),
+)
+```
+
+## Interactive Visualization
+
+```{python}
+fig = px.line(
+    x=sess.playback_time[:],
+    y=np.degrees(sess.spherical_coords[:, 0]),
+    markers=True,
+    title="Vertical movement",
+)
+fig.update_xaxes(title="Playback time")
+fig.update_yaxes(title="Pitch", range=[180, 0], tickvals=[0, 45, 90, 125, 180])
+```
+
+```{python}
+fig = px.line(
+    x=np.degrees(sess.spherical_coords[:, 1]),
+    y=sess.playback_time[:],
+    markers=True,
+    title="Horizontal movement",
+    width=480,
+    height=720,
+)
+fig.update_xaxes(title="Playback time", side="top", range=[0, 360])
+fig.update_yaxes(title="Yaw", autorange="reversed")
+```
+
+```{python}
+fig = visualization.visualize_head_orientation_in_3d(
+    sess.inclination,
+    sess.azimuth,
+    mode="lines+markers",
+    playback_time=sess.playback_time,
+)
+fig.show()
+```
+
+```{python}
+idx = 50
+
+plt.figure(figsize=(12, 6))
+
+frame = sess.frames[idx]
+plt.imshow(sess.frames[idx].astype(np.uint8))
+
+pos_x, pos_y = coordinate_converter.spherical_to_pixel(
+    sess.spherical_coords[idx:, 0],
+    sess.spherical_coords[idx:, 1],
+    frame.shape[0],
+    frame.shape[1],
+)
+
+plt.plot(pos_x, pos_y, marker="o");
+```
+
+```{python}
+ani = visualization.animate_viewport(
+    frames=sess.frames,
+    playback_time=sess.playback_time,
+    actual_spherical_coords=sess.spherical_coords,
+)
+
+HTML(ani.to_jshtml())
+```
+
+```{python}
+
+```
+
+## Playground
+
+```{python}
+
+```

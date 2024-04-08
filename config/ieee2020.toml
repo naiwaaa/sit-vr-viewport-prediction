@@ -1,0 +1,25 @@
+[data]
+data_dir              = "./datasets/has_subtitle"
+train_video_indices   = [1, 2, 3]
+val_video_indices     = [4]
+test_video_indices    = [5]
+
+[model]
+video_frame_shape     = [224, 224, 3]
+past_window_size      = 5
+future_window_size    = 5
+
+[training]
+optimizer       = "adam"
+loss_func       = "mse"
+max_epochs      = 1
+batch_size      = 32
+learning_rate   = 0.001
+
+[wandb]
+project   = "sit_vr_viewport_prediction"
+entity    = "wandb_dl"
+tags      = ["IEEELetter2020"]
+resume    = false
+
+[misc]

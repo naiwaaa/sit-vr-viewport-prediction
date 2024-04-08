@@ -1,0 +1,238 @@
+[tool.poetry]
+name = "viewport-prediction"
+version = "0.1.0"
+description = ""
+license = "MIT"
+authors = ["Noname <noname@email.com>"]
+readme = "README.md"
+repository = ""
+homepage = ""
+
+[tool.poetry.dependencies]
+python = "^3.10.2,<3.11"
+
+numpy = "^1.22.3"
+pandas = "^1.4.1"
+matplotlib = "^3.5.1"
+scikit-learn = "^1.0.2"
+
+tensorflow = "^2.8.0"
+torch = "^1.11.0"
+torchvision = "^0.12.0"
+pytorch-lightning = "^1.6.0"
+
+pydot = "^1.4.2"
+graphviz = "^0.19.2"
+wandb = "^0.12.14"
+
+srt = "^3.5.2"
+Pillow = "^9.0.1"
+plotly = "^5.6.0"
+
+tomli = "^2.0.1"
+PyYAML = "^6.0"
+pydantic = {extras = ["dotenv"], version = "^1.9.0"}
+rich = {extras = ["jupyter"], version = "^12.2.0"}
+
+[tool.poetry.dev-dependencies]
+pdoc3 = "^0.10.0"
+
+mypy = "^0.942"
+black = "^22.3.0"
+isort = "^5.10.1"
+pylint = "^2.13.5"
+safety = "^1.10.3"
+pyupgrade = "^2.32.0"
+pre-commit = "^2.18.1"
+
+flake8 = "^4.0.1"
+flake8-aaa = "^0.12.2"
+flake8-bandit = "^3.0.0"
+flake8-bugbear = "^22.3.23"
+flake8-builtins = "^1.5.3"
+flake8-simplify = "^0.19.2"
+flake8-eradicate = "^1.2.0"
+flake8-docstrings = "^1.6.0"
+flake8-pytest-style = "^1.6.0"
+flake8-type-checking = "^1.5.0"
+flake8-comprehensions = "^3.8.0"
+flake8-rst-docstrings = "^0.2.5"
+darglint = "^1.8.1"
+pep8-naming = "^0.12.1"
+
+pytest = "^7.1.1"
+pytest-cov = "^3.0.0"
+pytest-mock = "^3.7.0"
+pytest-randomly = "^3.11.0"
+pytest-benchmark = "^3.4.1"
+hypothesis = {extras = ["numpy"], version = "^6.41.0"}
+
+jupyterlab = "^3.3.3"
+jupytext = "^1.13.8"
+jupyterlab-lsp = "^3.10.1"
+python-lsp-server = "^1.4.1"
+ipywidgets = "^7.7.0"
+jupyterlab-code-formatter = "^1.4.10"
+lckr-jupyterlab-variableinspector = "^3.0.9"
+aquirdturtle-collapsible-headings = "^3.1.0"
+
+types-PyYAML = "^6.0.5"
+types-Pillow = "^9.0.11"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+vp = "viewport_prediction:cli.main"
+
+[tool.mypy]
+python_version = "3.10"
+
+# disallow dynamic typing
+disallow_any_explicit = false
+disallow_any_generics = true
+
+# untyped definitions and calls
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+
+# none and optional handling
+no_implicit_optional = true
+strict_optional = true
+
+# configuring warnings
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_return_any = true
+warn_unreachable = true
+
+# miscellaneous strictness flags
+allow_redefinition = false
+implicit_reexport = false
+strict_equality = true
+
+# configuring error messages
+show_error_context = true
+show_column_numbers = true
+show_error_codes = true
+
+# advanced options
+plugins = ["numpy.typing.mypy_plugin", "pydantic.mypy"]
+
+# miscellaneous
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = [
+  "pandas.*",
+  "matplotlib.*",
+  "tensorflow.*",
+  "sklearn.*",
+  "srt",
+  "plotly.*",
+]
+ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
+
+[tool.black]
+line-length = 90
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+sections = ["FUTURE", "TYPING", "STDLIB", "TEST", "THIRDPARTY", "DL", "FIRSTPARTY", "LOCALFOLDER"]
+known_typing = "typing,types,typing_extensions,mypy,mypy_extensions"
+known_test = "pytest,pytest_mock,numpy.testing,hypothesis"
+known_dl = "tensorflow,torch,torchvision,pytorch_lightning"
+known_first_party = "viewport_prediction"
+length_sort = true
+lines_after_imports = 2
+
+[tool.pylint.MASTER]
+extension-pkg-whitelist = ["pydantic"]
+jobs = 0
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+  "ungrouped-imports",
+  "missing-module-docstring",
+  "missing-function-docstring",
+  "too-few-public-methods",
+  "missing-class-docstring",
+]
+
+[tool.pylint.LOGGING]
+logging-format-style = "new"
+
+[tool.pylint.SIMILARITIES]
+min-similarity-lines = 6
+
+[tool.pylint.VARIABLES]
+init-import = "yes"
+
+[tool.pylint.FORMAT]
+good-names = "X,x,y,z"
+max-line-length = 90
+
+[tool.pylint.BASIC]
+class-attribute-naming-style = "snake_case"
+
+[tool.pylint.DESIGN]
+max-args = 10
+max-parents = 10
+
+[tool.pytest.ini_options]
+addopts = [
+  # reporting
+  "--durations=5",
+  "-vv",
+  "--showlocals",
+  "--exitfirst",
+  "--last-failed",
+  "--color=yes",
+  # warnings
+  "--strict-config",
+  "--strict-markers",
+  # collection
+  "--ignore-glob=**/fixtures/*",
+  "--doctest-modules",
+  "--doctest-continue-on-failure",
+  # pytest-cov
+  "--cov=viewport_prediction",
+  "--cov-report=term-missing:skip-covered",
+  "--cov-config=pyproject.toml",
+  # hypothesis
+  "--hypothesis-show-statistics",
+]
+doctest_optionflags = "NUMBER IGNORE_EXCEPTION_DETAIL"
+xfail_strict = true
+markers = [
+  "slow: mark tests as slow",
+]
+testpaths = ["viewport_prediction", "tests"]
+
+[tool.coverage.run]
+branch = true
+omit = ["**/test_*"]
+relative_files = true
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "raise NotImplementedError",
+  "if TYPE_CHECKING:",
+]
+fail_under = 90
+omit = [
+  "viewport_prediction/visualization/*",
+]

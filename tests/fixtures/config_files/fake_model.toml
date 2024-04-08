@@ -1,0 +1,25 @@
+[data]
+data_dir              = ""
+train_video_indices   = []
+val_video_indices     = []
+test_video_indices    = []
+
+[model]
+past_window_size      = 1
+future_window_size    = 1
+hidden_size           = 1
+
+[training]
+optimizer       = "adam"
+loss_func       = "mse"
+max_epochs      = 1
+batch_size      = 1
+learning_rate   = 0.1
+
+[wandb]
+project   = "random_project"
+entity    = "random_entity"
+tags      = []
+resume    = false
+
+[misc]
